@@ -105,12 +105,18 @@ function Hero() {
               <ArrowRight className="size-4" />
             </a>
             <a
-              href={contest.platform}
-              target="_blank"
-              rel="noreferrer"
+              href="/tujian-jinguan.html"
+              download="途见锦官策划方案.html"
               className="inline-flex items-center rounded-full border border-border px-5 py-2.5 text-sm"
             >
-              打开智小途
+              下载离线网页
+            </a>
+            <a
+              href="/tujian-jinguan-source.zip"
+              download="途见锦官策划方案-源码.zip"
+              className="inline-flex items-center rounded-full border border-border px-5 py-2.5 text-sm"
+            >
+              下载源码压缩包
             </a>
           </div>
         </div>

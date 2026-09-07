@@ -22,6 +22,13 @@ export function SiteHeader() {
             </a>
           ))}
           <a
+            href="/tujian-jinguan.html"
+            download="途见锦官策划方案.html"
+            className="rounded-full border border-border px-3 py-1 text-xs"
+          >
+            下载网页
+          </a>
+          <a
             href={contest.signup}
             target="_blank"
             rel="noreferrer"
@@ -50,14 +57,21 @@ export function SiteHeader() {
               {item.label}
             </a>
           ))}
-          <a
-            href={contest.signup}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-md px-2 py-2.5 text-primary"
-          >
-            官方报名
-          </a>
+            <a
+              href="/tujian-jinguan.html"
+              download="途见锦官策划方案.html"
+              className="rounded-md px-2 py-2.5"
+            >
+              下载网页
+            </a>
+            <a
+              href={contest.signup}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-md px-2 py-2.5 text-primary"
+            >
+              官方报名
+            </a>
         </div>
       </div>
     </header>
