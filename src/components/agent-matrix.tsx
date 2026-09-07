@@ -1,6 +1,3 @@
-"use client";
-
-import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -21,78 +18,84 @@ const layerColor: Record<string, string> = {
 };
 
 export function AgentMatrix() {
-  const [activeId, setActiveId] = useState(agents[0].id);
-  const active = agents.find((a) => a.id === activeId) ?? agents[0];
-  const related = useMemo(() => {
-    const ids = new Set([...active.calls, ...agents.filter((a) => a.calls.includes(active.id)).map((a) => a.id)]);
-    ids.delete(active.id);
-    return agents.filter((a) => ids.has(a.id));
-  }, [active]);
-
   return (
-    <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {agents.map((agent) => {
-          const isActive = agent.id === activeId;
-          const isRelated = related.some((r) => r.id === agent.id);
-          return (
-            <button
+    <div className="agent-shell grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+      <div>
+        <p className="mb-3 text-sm text-muted-foreground">
+          点选岗位查看人设、输入输出和呼叫关系。
+        </p>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {agents.map((agent, index) => (
+            <label
               key={agent.id}
-              type="button"
-              onClick={() => setActiveId(agent.id)}
-              className={`rounded-xl border p-3 text-left transition ${
-                isActive
-                  ? "border-primary bg-primary text-primary-foreground shadow-md"
-                  : isRelated
-                    ? "border-primary/40 bg-card"
-                    : "border-border bg-card/70 hover:border-primary/30"
-              }`}
+              htmlFor={`pick-${agent.id}`}
+              className="min-h-[5.5rem] cursor-pointer rounded-xl border border-border bg-card/70 p-3 text-left has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-primary-foreground has-[:checked]:shadow-md"
             >
+              <input
+                type="radio"
+                name="agent-matrix"
+                id={`pick-${agent.id}`}
+                defaultChecked={index === 0}
+                className="sr-only"
+              />
               <div className="text-[11px] opacity-70">{agent.no}</div>
               <div className="font-heading text-base">{agent.name}</div>
-              <div className={`mt-1 text-xs ${isActive ? "opacity-90" : "text-muted-foreground"}`}>
-                {agent.role}
-              </div>
-            </button>
+              <div className="mt-1 text-xs opacity-80">{agent.role}</div>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        {agents.map((agent) => {
+          const callers = agents.filter(
+            (a) => a.calls.includes(agent.id) && a.id !== agent.id
+          );
+          const callees = agents.filter((a) => agent.calls.includes(a.id));
+          return (
+            <Card
+              key={agent.id}
+              id={`panel-${agent.id}`}
+              className="agent-panel bg-card"
+            >
+              <CardHeader>
+                <div className="flex items-center justify-between gap-2">
+                  <CardTitle className="font-heading text-2xl">
+                    {agent.no} {agent.name}
+                  </CardTitle>
+                  <Badge className={layerColor[agent.layer]} variant="secondary">
+                    {agent.layer}
+                  </Badge>
+                </div>
+                <CardDescription>
+                  {agent.role} · {agent.persona}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4 text-sm leading-7">
+                <p className="rounded-lg bg-muted px-3 py-2 text-foreground/90">
+                  「{agent.greeting}」
+                </p>
+                <Block title="听什么" items={agent.inputs} />
+                <Block title="交出什么" items={agent.outputs} />
+                <Block title="知识库" items={agent.knowledge} />
+                <div>
+                  <div className="mb-1 text-xs font-medium tracking-wide text-muted-foreground">
+                    协同关系
+                  </div>
+                  <p>会呼叫：{callees.map((a) => a.name).join("、") || "—"}</p>
+                  <p>
+                    会被谁叫：
+                    {callers.map((a) => a.name).join("、") || "完成后回传总调度"}
+                  </p>
+                </div>
+                <p className="border-l-2 border-primary pl-3 text-foreground">
+                  必做：{agent.mustHave}
+                </p>
+              </CardContent>
+            </Card>
           );
         })}
       </div>
-
-      <Card className="bg-card">
-        <CardHeader>
-          <div className="flex items-center justify-between gap-2">
-            <CardTitle className="font-heading text-2xl">
-              {active.no} {active.name}
-            </CardTitle>
-            <Badge className={layerColor[active.layer]} variant="secondary">
-              {active.layer}
-            </Badge>
-          </div>
-          <CardDescription>{active.role} · {active.persona}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4 text-sm leading-7">
-          <p className="rounded-lg bg-muted px-3 py-2 text-foreground/90">
-            「{active.greeting}」
-          </p>
-          <Block title="听什么" items={active.inputs} />
-          <Block title="交出什么" items={active.outputs} />
-          <Block title="知识库" items={active.knowledge} />
-          <div>
-            <div className="mb-1 text-xs font-medium tracking-wide text-muted-foreground">
-              协同关系
-            </div>
-            <p>
-              会呼叫：{related.filter((r) => active.calls.includes(r.id)).map((r) => r.name).join("、") || "—"}
-            </p>
-            <p>
-              会被谁叫：{agents.filter((a) => a.calls.includes(active.id) && a.id !== active.id).map((a) => a.name).join("、") || "完成后回传总调度"}
-            </p>
-          </div>
-          <p className="border-l-2 border-primary pl-3 text-foreground">
-            必做：{active.mustHave}
-          </p>
-        </CardContent>
-      </Card>
     </div>
   );
 }

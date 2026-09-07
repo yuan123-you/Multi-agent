@@ -142,3 +142,35 @@
     linear-gradient(to bottom, oklch(0.82 0.03 70 / 0.18) 1px, transparent 1px);
   background-size: 28px 28px;
 }
+
+.agent-panel,
+.journey-panel {
+  display: none !important;
+}
+
+.agent-shell:has(#pick-xiaotu:checked) #panel-xiaotu,
+.agent-shell:has(#pick-lulu:checked) #panel-lulu,
+.agent-shell:has(#pick-jinli:checked) #panel-jinli,
+.agent-shell:has(#pick-zhizao:checked) #panel-zhizao,
+.agent-shell:has(#pick-lala:checked) #panel-lala,
+.agent-shell:has(#pick-jinxiu:checked) #panel-jinxiu,
+.agent-shell:has(#pick-xingxing:checked) #panel-xingxing,
+.agent-shell:has(#pick-anan:checked) #panel-anan,
+.agent-shell:has(#pick-antu:checked) #panel-antu,
+.agent-shell:has(#pick-yitu:checked) #panel-yitu,
+.agent-shell:has(#pick-shijing:checked) #panel-shijing,
+.agent-shell:has(#pick-huixiang:checked) #panel-huixiang,
+.journey-shell:has(#journey-family:checked) #panel-family,
+.journey-shell:has(#journey-rain:checked) #panel-rain,
+.journey-shell:has(#journey-b2c:checked) #panel-b2c {
+  display: flex !important;
+}
+
+@media (max-width: 767px) {
+  .mobile-nav {
+    display: none;
+  }
+  .site-header:has(#nav-toggle:checked) .mobile-nav {
+    display: block;
+  }
+}

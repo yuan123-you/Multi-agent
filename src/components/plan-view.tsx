@@ -10,20 +10,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "@/components/ui/accordion";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { JourneyTabs } from "@/components/journey-tabs";
 import {
   alternatives,
   collabLayers,
   contest,
   decisionReasons,
   events,
-  journeys,
   knowledgePacks,
   platformMap,
   scoring,
@@ -340,39 +333,7 @@ function JourneySection() {
       title="三分钟只演三条线，不演功能表。"
       desc="视频和答辩都按这条走：主路径证明完整，暴雨证明关联，商户证明文商旅的「商」不是空字。"
     >
-      <Tabs defaultValue="family">
-        <TabsList className="mb-4 h-auto w-full flex-wrap justify-start gap-1 bg-muted p-1">
-          {journeys.map((j) => (
-            <TabsTrigger key={j.id} value={j.id} className="px-3 py-1.5">
-              {j.title.split("·")[0]}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        {journeys.map((j) => (
-          <TabsContent key={j.id} value={j.id}>
-            <Card>
-              <CardHeader>
-                <CardTitle>{j.title}</CardTitle>
-                <CardDescription>
-                  {j.duration} · {j.goal}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ol className="space-y-3">
-                  {j.beats.map((beat, i) => (
-                    <li key={beat} className="flex gap-3 text-sm leading-7">
-                      <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary">
-                        {i + 1}
-                      </span>
-                      <span>{beat}</span>
-                    </li>
-                  ))}
-                </ol>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        ))}
-      </Tabs>
+      <JourneyTabs />
     </Section>
   );
 }
@@ -507,26 +468,29 @@ function AltSection() {
       title="如果必须换赛题，关联结构可以原样迁移。"
       desc="白板换成学生画像或项目看板，十二岗换皮即可。不要推翻协同模型。"
     >
-      <Accordion>
+      <div className="space-y-3">
         {alternatives.map((alt) => (
-          <AccordionItem key={alt.name} value={alt.name}>
-            <AccordionTrigger className="font-heading text-lg hover:no-underline">
+          <details
+            key={alt.name}
+            className="rounded-xl border border-border bg-card px-4 py-2 open:pb-4"
+          >
+            <summary className="cursor-pointer py-2 font-heading text-lg">
               {alt.name}
-            </AccordionTrigger>
-            <AccordionContent className="text-sm leading-7 text-muted-foreground">
+            </summary>
+            <div className="space-y-2 pt-1 text-sm leading-7 text-muted-foreground">
               <p>{alt.summary}</p>
-              <p className="mt-2">
+              <p>
                 <span className="text-foreground">十二岗：</span>
                 {alt.agents}
               </p>
-              <p className="mt-2">
+              <p>
                 <span className="text-foreground">何时切换：</span>
                 {alt.when}
               </p>
-            </AccordionContent>
-          </AccordionItem>
+            </div>
+          </details>
         ))}
-      </Accordion>
+      </div>
     </Section>
   );
 }
