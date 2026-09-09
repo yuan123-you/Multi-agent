@@ -1,12 +1,12 @@
 # Multi-agent
 
-本仓库仅保留 A 赛道参赛材料：
+This repository keeps A-track contest materials only:
 
-- `智能体大赛参考文档/`：官方参考（参赛指南、用户操作手册、智能体搭建、数字人形象制作、验收标准）
-- `submission/`：本队生成的提交文案
+- `agent-contest-reference-docs/`: official references (contest guide, user manual, agent building, digital-human character guide, acceptance standards)
+- `submission/`: team submission copy
 
-| 文件 | 用途 |
+| File | Use |
 | --- | --- |
-| `submission/A赛道-设计文档.txt` | 报名系统，不超过 500 字 |
-| `submission/A赛道-作品简介.txt` | 报名系统，不超过 200 字 |
-| `submission/A赛道-团队详细设计文档.md` | 团队内部详细设计 |
+| `submission/A赛道-设计文档.txt` | Contest form, max 500 characters |
+| `submission/A赛道-作品简介.txt` | Contest form, max 200 characters |
+| `submission/A赛道-团队详细设计文档.md` | Internal detailed design |
