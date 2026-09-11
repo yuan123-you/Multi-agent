@@ -10,3 +10,4 @@ This repository keeps A-track contest materials only:
 | `submission/A赛道-设计文档.txt` | Contest form, max 500 characters |
 | `submission/A赛道-作品简介.txt` | Contest form, max 200 characters |
 | `submission/A赛道-团队详细设计文档.md` | Internal detailed design |
+| `submission/空间创建表单.md` | WorkBrain create-space form copy, 4:1 logo, avatar |
