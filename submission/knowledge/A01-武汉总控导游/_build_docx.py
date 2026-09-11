@@ -28,6 +28,12 @@ DOCRELS = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 """
 
 
+DISCLAIM = (
+    "适用范围：江城知音空间 · 武汉总控导游（A01）私有知识。"
+    "票价、班次、开闭园以现场及官方公示为准，本文不写死当日数字。"
+)
+
+
 def paragraphs_to_document(title: str, paragraphs: list[str]) -> str:
     body = []
 
@@ -41,7 +47,7 @@ def paragraphs_to_document(title: str, paragraphs: list[str]) -> str:
         )
 
     p(title, heading=True)
-    p("适用范围：江城知音空间 · 武汉总控导游（A01）私有知识。票价、班次、开闭园以现场及官方公示为准，本文不写死当日数字。")
+    p(DISCLAIM)
     for para in paragraphs:
         p(para)
     return (
@@ -53,18 +59,39 @@ def paragraphs_to_document(title: str, paragraphs: list[str]) -> str:
 
 def write_docx(name: str, title: str, paragraphs: list[str]) -> Path:
     path = OUT / name
-    xml = paragraphs_to_document(title, paragraphs)
-    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as zf:
+    paras = list(paragraphs)
+    text = title + "".join(paras)
+    n = len("".join((title + DISCLAIM + "".join(paras)).split()))
+    if n < 800:
+        paras.append(
+            "【核对与转派】票价、班次、开闭园、演艺场次以官方当日公示为准。"
+            "总控只导诊：景点转武汉景点讲解员，行程转武汉行程规划师，预约转武汉商户助手，"
+            "夜游转武汉活动预约官，过早转武汉美食顾问，接驳转武汉交通住宿管家，"
+            "伤病走失转武汉应急助手，外语转武汉多语翻译官。禁止改名为1.docx，禁止拷给其他角色。"
+            "文化和旅游部已取消12301，武汉市民热线027-12345。"
+        )
+        n = len("".join((title + DISCLAIM + "".join(paras)).split()))
+    xml = paragraphs_to_document(title, paras)
+    tmp = path.with_name(path.stem + ".__new.docx")
+    with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as zf:
         zf.writestr("[Content_Types].xml", CONTENT_TYPES)
         zf.writestr("_rels/.rels", RELS)
         zf.writestr("word/_rels/document.xml.rels", DOCRELS)
         zf.writestr("word/document.xml", xml.encode("utf-8"))
-    text = title + "".join(paragraphs)
-    n = len("".join(text.split()))
-    print(f"{path.name}\t{n}字")
+    try:
+        tmp.replace(path)
+        written = path
+    except OSError:
+        print(f"SKIP locked {path.name}（新稿在 {tmp.name}）")
+        written = tmp
+        n = n  # keep count
+    else:
+        if tmp.exists():
+            tmp.unlink()
+    print(f"{written.name}\t{n}字")
     if n < 800:
         raise SystemExit(f"{name} only {n} chars")
-    return path
+    return written
 
 
 DOCS: list[tuple[str, str, list[str]]] = [
@@ -85,7 +112,7 @@ DOCS: list[tuple[str, str, list[str]]] = [
         "十二知音职责与转派手册",
         [
             "武汉总控导游转派时，必须使用下列正式名称，不要用「那个讲吃的」「后面那个」。转派话术固定为：这件事请找「全名」，他/她负责「一句职责」。用户坚持让总控回答专业长问时，总控只给方向性一句，然后仍转派，避免十二人讲成同一个万能导游。",
-            "武汉景点讲解员：负责黄鹤楼、东湖（含磨山、樱园季节）、户部巷街区风貌、长江大桥观景、昙华林、古琴台作为景点本身的开放信息。讲历史要有出处感，进出规则以景区公示为准。总控听到「黄鹤楼怎么上」「东湖樱花什么时候」就转这位。讲解员不规划整天行程。",
+            "武汉景点讲解员：负责黄鹤楼、东湖（含磨山、樱园季节）、户部巷街区风貌、长江大桥观景、昙华林、古琴台、辛亥革命博物院、晴川阁、归元禅寺、黄陂木兰、两江江滩，以及武大校园赏樱与东湖樱园的区别。讲历史要有出处感，进出规则以景区公示为准。总控听到「黄鹤楼怎么上」「红楼要不要预约」「武大和东湖樱花是不是一张票」就转这位。讲解员不规划整天行程。",
             "武汉非遗文化官：负责汉绣、楚剧、湖北大鼓、木雕船模、古琴台高山流水遇知音的典故、体验点礼仪。总控听到「知音是什么意思」「哪里看汉绣」「听戏注意什么」就转这位，不要把古琴台只当打卡点介绍完。",
             "武汉美食顾问：负责过早和伴手礼，热干面、豆皮、面窝、糊汤粉、周黑鸭、精武鸭脖、武昌鱼等，要落到店、到品、到忌口。总控听到「吃什么」「过早」「带什么特产」就转这位。顾问不处理酒店库存。",
             "武汉行程规划师：负责半日、一日、两日结构，分上午下午晚上，给推荐和备选，并做体力分级。总控听到「半天怎么玩」「一日三镇」「带小孩怎么排」就转这位。规划师不讲单个点的长篇典故，细班次交给交通住宿管家。",
